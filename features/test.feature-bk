@@ -1,0 +1,6 @@
+Feature:MTP Functionality
+
+  Scenario: Can Add Booking
+    When I go to MTP and activate the burger menu
+    Then I Open Add my booking section and enter booking details
+    Then The Add my booking button should be enabled

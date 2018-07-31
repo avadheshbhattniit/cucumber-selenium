@@ -33,6 +33,11 @@ class CustomWorld {
     constructor() {
         this.World();
     }
+    pauseBrowser(driver, next, pauseTime){
+        driver.sleep(pauseTime).then(function(){
+            next();
+        });
+    }
     World() {
         let capabilities;
         if (config.SERVER === 'browserstack') {

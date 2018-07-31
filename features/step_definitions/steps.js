@@ -5,28 +5,51 @@ let chaiAsPromised = require('chai-as-promised');
 
 // middleware
 chai.use(chaiAsPromised);
+let pauseTime = 1000;
+let timeout = 10000;
 
-let burgerButton = By.css('.bm-burger-button');
-let loader = By.css('.reveal-overlay');
 
 
 Given('I open site url', function(next){
 	let driver = this.driver;
-    driver.get('https://trafalgar.mtp.qa.travcorpservices.com').then(() => {
+	let loader = By.css('.reveal-overlay');
+	let pauseBrowser = this.pauseBrowser;
+	// driver.get('https://trafalgar.mtp.qa.travcorpservices.com').then(() => {
+    driver.get('http://localhost:3000').then(() => {
         driver.manage().window().maximize();
-        setTimeout(() => {
-            next();
-        }, 5000);
+        driver.wait(until.elementLocated(loader), timeout).then(function(){
+			driver.wait(until.elementIsNotVisible(driver.findElement(loader))).then( () => {
+				pauseBrowser(driver, next, pauseTime);
+			});
+		})
     });
+});
+
+Then('I check logo', function(next){
+	let driver = this.driver;
+	let logo = By.css('[data-test=logo]');
+	let logoEl = driver.findElement(logo);
+	let pauseBrowser = this.pauseBrowser;
+	driver.wait(until.elementLocated(logo), timeout).then( () => {
+    	driver.wait(until.elementIsVisible(logoEl)).then( () => {
+			logoEl.getAttribute('data-test').then(function(value){
+				console.log('******** dataTest ********', value);
+				pauseBrowser(driver, next, pauseTime);
+			});
+		});
+    });
+
 });
 
 When('I open burger menu', function(next){
 	let driver = this.driver;
     let burgerButton = By.css('.bm-burger-button');
-    driver.wait(until.elementLocated(burgerButton), 10000).then( () => {
-    	driver.wait(until.elementIsVisible(driver.findElement(burgerButton)), 10000).then( () => {
-    	driver.findElement(burgerButton).click();
-	    next();
+    let burgerButtonEl = driver.findElement(burgerButton)
+    let pauseBrowser = this.pauseBrowser;
+    driver.wait(until.elementLocated(burgerButton), timeout).then( () => {
+    	driver.wait(until.elementIsVisible(burgerButtonEl)).then( () => {
+			burgerButtonEl.click();
+			pauseBrowser(driver, next, pauseTime);
     	});
     });
 });
@@ -34,10 +57,12 @@ When('I open burger menu', function(next){
 Then('I close trip section', function(next){
 	let driver = this.driver;
     let myTripCollapsibleButton = By.css('.side-menu__link div li:nth-child(2) a');
-    driver.wait(until.elementLocated(myTripCollapsibleButton), 10000).then(() => {
-    	driver.wait(until.elementIsVisible(driver.findElement(myTripCollapsibleButton)), 10000).then(() => {
-    		driver.findElement(myTripCollapsibleButton).click();
-		    next();
+    let myTripCollapsibleButtonEl = driver.findElement(myTripCollapsibleButton);
+    let pauseBrowser = this.pauseBrowser;
+    driver.wait(until.elementLocated(myTripCollapsibleButton), timeout).then(() => {
+    	driver.wait(until.elementIsVisible(myTripCollapsibleButtonEl), timeout).then(() => {
+    		myTripCollapsibleButtonEl.click();
+		    pauseBrowser(driver, next, pauseTime);
     	});
     });
 });
@@ -45,10 +70,11 @@ Then('I close trip section', function(next){
 When('I Open Add my book section', function(next){
 	let driver = this.driver;
 	let addMyBookingSection = By.css('[test-data=anchor]');
-	driver.wait(until.elementLocated(addMyBookingSection), 10000).then( () => {
-    	driver.wait(until.elementIsVisible(driver.findElement(addMyBookingSection)), 10000).then( () => {
-    	driver.findElement(addMyBookingSection).click();
-	    next();
+	let pauseBrowser = this.pauseBrowser;
+	driver.wait(until.elementLocated(addMyBookingSection), timeout).then( () => {
+    	driver.wait(until.elementIsVisible(driver.findElement(addMyBookingSection)), timeout).then( () => {
+			driver.findElement(addMyBookingSection).click();
+			pauseBrowser(driver, next, pauseTime);
     	});
     });
 });
@@ -56,12 +82,11 @@ When('I Open Add my book section', function(next){
 Then('I Enter Booking ref', function(next){
 	let driver = this.driver;
 	let bookingRef = By.css('[test-data=bookingref]');
-	driver.wait(until.elementLocated(bookingRef), 10000).then( () => {
-		driver.wait(until.elementIsVisible(driver.findElement(bookingRef)), 10000).then( () => {
+	let pauseBrowser = this.pauseBrowser;
+	driver.wait(until.elementLocated(bookingRef), timeout).then( () => {
+		driver.wait(until.elementIsVisible(driver.findElement(bookingRef))).then( () => {
 			driver.findElement(bookingRef).sendKeys('avadh1234');
-			setTimeout(() => {
-		        next();
-		    }, 5000);
+			pauseBrowser(driver, next, pauseTime);
 		});
 	});
 });

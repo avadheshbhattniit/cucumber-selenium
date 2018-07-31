@@ -82,10 +82,11 @@ When('I Open Add my book section', function(next){
 Then('I Enter Booking ref', function(next){
 	let driver = this.driver;
 	let bookingRef = By.css('[test-data=bookingref]');
+	let bookingRefEl = driver.findElement(bookingRef);
 	let pauseBrowser = this.pauseBrowser;
 	driver.wait(until.elementLocated(bookingRef), timeout).then( () => {
-		driver.wait(until.elementIsVisible(driver.findElement(bookingRef))).then( () => {
-			driver.findElement(bookingRef).sendKeys('avadh1234');
+		driver.wait(until.elementIsVisible(bookingRefEl)).then( () => {
+			bookingRefEl.sendKeys('avadh1234');
 			pauseBrowser(driver, next, pauseTime);
 		});
 	});
